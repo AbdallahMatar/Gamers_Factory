@@ -49,6 +49,12 @@ Route::namespace('Api')->middleware('auth:author')->group(function () {
     Route::get('author/logout', 'Auth\AuthorController@logout');
 });
 
+// Admin And Author Auth
+Route::namespace('Api')->middleware('auth:admin,author')->group(function () {
+    Route::apiResource('categories', 'CategoryController');
+    Route::apiResource('articles', 'ArticleController');
+});
+
 // Chat Message For User
 Route::namespace('Api')->middleware('auth:user')->group(function () {
     Route::post('message/send', 'ChatController@sendMessage');
@@ -64,6 +70,8 @@ Route::namespace('Api')->middleware('auth:user')->group(function () {
     Route::get('room/index', 'RoomController@getAllRooms');
     Route::get('room/myroom', 'RoomController@getMyRoom');
     Route::delete('room/delete/{id}', 'RoomController@deleteRoom');
+
+    Route::post('store/message', 'ConversationController@storeMessage');
 });
 
 
