@@ -17,7 +17,7 @@ class AuthorController extends Controller
     public function login(Request $request)
     {
         $roles = [
-            'email' => 'required|email|exists:authers',
+            'email' => 'required|email|exists:authors',
             'password' => 'required|min:3',
         ];
         $validator = Validator::make($request->all(), $roles);
