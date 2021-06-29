@@ -75,4 +75,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Room::class, 'user_id', 'id');
     }
+
+    public function friends()
+    {
+        return $this->belongsToMany(User::class, User_friend::class, 'user_id', 'friend_id')->withTimestamps();
+    }
 }
