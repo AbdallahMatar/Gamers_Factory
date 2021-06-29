@@ -55,6 +55,15 @@ Route::namespace('Api')->middleware('auth:admin,author')->group(function () {
     Route::apiResource('articles', 'ArticleController');
 });
 
+// Friend System
+Route::namespace('Api')->middleware('auth:user')->group(function () {
+    Route::get('my/friend', 'FriendController@getAllFriend');
+    Route::post('add/friend/{id}', 'FriendController@addFriend');
+    Route::get('pending/friend', 'FriendController@pendingFriend');
+    Route::post('accepted/friend/{id}', 'FriendController@acceptFriend');
+    Route::delete('remove/friend/{id}', 'FriendController@removeFriend');
+});
+
 // Chat Message For User
 Route::namespace('Api')->middleware('auth:user')->group(function () {
     Route::post('message/send', 'ChatController@sendMessage');
