@@ -6,7 +6,9 @@ use App\Article;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerHelper;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -43,17 +45,24 @@ class ArticleController extends Controller
         ];
         $validator = Validator::make($request->all(), $roles);
         if (!$validator->fails()) {
-            $request_data = $request->except('image');
+            $article = new Article();
+            $article->title = $request->title;
+            $article->description = $request->description;
+            $article->category_id = $request->category_id;
+            $article->author_id = $request->author_id;
+            $article->status = $request->status;
 
             if ($request->hasFile('image')) {
-                $articleImage = $request->file('image');
-                $imageName = time() . '_' . $request->get('title') . '.' . $articleImage->getClientOriginalExtension();
-                $articleImage->move('images/article/', $imageName);
-                $request_data['image'] = $imageName;
+                $articlePath = $request->file('image');
+                $articleName = time() . '_' . Str::random(5) . '.' . $articlePath->getClientOriginalExtension();
+
+                $path = $request->file('image')->storeAs('images/article/', $articleName, 'public');
+                $article->image = '/storage/' . $path;
+                // $article->image = $request->image->store('images', 'public');
             }
 
-            $article = Article::create($request_data);
-            if ($article) {
+            $isSaved = $article->save();
+            if ($isSaved) {
                 return ControllerHelper::generateResponse(true, 'Saved Successfully', 201);
             } else {
                 return ControllerHelper::generateResponse(false, 'Error Credentials', 400);
@@ -139,11 +148,14 @@ class ArticleController extends Controller
         //
         $article = Article::find($id);
         if ($article) {
-            if ($article->image != 'default.png') {
-                if (File::exists('images/article/' . $article->image)) {
-                    unlink('images/article/' . $article->image);
-                }
-            }
+            // if ($article->image != 'default.png') {
+            //     // dd($article->image);
+            //     if (File::exists('images/article/' . $article->image)) {
+            //         unlink('images/article/' . $article->image);
+            //     }
+            // }
+            // Storage::disk('public')->delete($article->image);
+            Storage::delete( public_path('/images/article' . $article->image));
 
             $isDelted = $article->delete();
             if ($isDelted) {
