@@ -30,7 +30,7 @@ class AdminController extends Controller
                     $response = Http::asForm()->post('http://127.0.0.1:8001/oauth/token', [
                         'grant_type' => 'password',
                         'client_id' => '3',
-                        'client_secret' => 'KoPulzLgiMH0qpqISHm79rYsH6HWTQ09GXfxRP1S',
+                        'client_secret' => 'AU4OTz3LgqS298EVN0T80qF2GNN0VL37hN53nK9r',
                         'username' => $request->get('email'),
                         'password' => $request->get('password'),
                         'scope' => '*',

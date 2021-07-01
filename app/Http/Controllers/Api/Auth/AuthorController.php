@@ -32,7 +32,7 @@ class AuthorController extends Controller
                     $response = Http::asForm()->post('http://127.0.0.1:8001/oauth/token', [
                         'grant_type' => 'password',
                         'client_id' => '4',
-                        'client_secret' => 'YhtDczjlMQuMNjL5HMihjE0IDEOgDSq6tFJXxqJw',
+                        'client_secret' => 'c7YBwrDHkONg7JaUlQqG6OiPpW4VASqdvNoJSwCD',
                         'username' => $request->get('email'),
                         'password' => $request->get('password'),
                         'scope' => '*',

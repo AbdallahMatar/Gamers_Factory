@@ -42,12 +42,28 @@ class UserController extends Controller
 
             $isSaved = $user->save();
             if ($isSaved) {
-                return $this->generateToken($user, 'REGISTERED_SUCCESSFULLY');
+                $response = Http::asForm()->post('http://127.0.0.1:8001/oauth/token', [
+                    'grant_type' => 'password',
+                    'client_id' => '2',
+                    'client_secret' => 'r40DS4y6oXJ5yo1JPCMlmIbKnrDN5xo4oEGRTMCK',
+                    'username' => $request->get('email'),
+                    'password' => $request->get('password'),
+                    'scope' => '*',
+                ]);
+
+                $user->setAttribute('token', $response->json()['access_token']);
+                $user->setAttribute('refresh_token', $response->json()['refresh_token']);
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'REGISTERED_SUCCESSFULLY',
+                    'object' => $user
+                ], 200);
             } else {
-                return ControllerHelper::generateResponse(false, 'Error Credentials', 400);
+                return ControllerHelper::generateResponse(false, 'Error credentials', 400);
             }
         } else {
-            return ControllerHelper::generateResponse(false, $validator->getMessageBag()->first(), 200);
+            return ControllerHelper::generateResponse(false, $validator->getMessageBag()->first(), 400);
         }
     }
 
@@ -62,23 +78,22 @@ class UserController extends Controller
             $user = User::where('email', $request->get('email'))->first();
             if (Hash::check($request->get('password'), $user->password)) {
                 $this->revokePreviousTokens($user->id);
-                    $response = Http::asForm()->post('http://127.0.0.1:8001/oauth/token', [
-                        'grant_type' => 'password',
-                        'client_id' => '2',
-                        'client_secret' => 'Grcugn1lUVPXtYV71U5ROGSPEHqSEnvXapabWLvF',
-                        'username' => $request->get('email'),
-                        'password' => $request->get('password'),
-                        'scope' => '*',
-                    ]);
+                $response = Http::asForm()->post('http://127.0.0.1:8001/oauth/token', [
+                    'grant_type' => 'password',
+                    'client_id' => '2',
+                    'client_secret' => 'r40DS4y6oXJ5yo1JPCMlmIbKnrDN5xo4oEGRTMCK',
+                    'username' => $request->get('email'),
+                    'password' => $request->get('password'),
+                    'scope' => '*',
+                ]);
 
-                    $user->setAttribute('token', $response->json()['access_token']);
-                    $user->setAttribute('refresh_token', $response->json()['refresh_token']);
-                    return response()->json([
-                        'status' => true,
-                        'message' => 'LOGGED_IN_SUCCESSFULLY',
-                        'object' => $user
-                    ], 200);
-
+                $user->setAttribute('token', $response->json()['access_token']);
+                $user->setAttribute('refresh_token', $response->json()['refresh_token']);
+                return response()->json([
+                    'status' => true,
+                    'message' => 'LOGGED_IN_SUCCESSFULLY',
+                    'object' => $user
+                ], 200);
             } else {
                 return ControllerHelper::generateResponse(false, 'Error credentials', 400);
             }
@@ -121,9 +136,9 @@ class UserController extends Controller
     private function checkActiveTokens($userId)
     {
         return DB::table('oauth_access_tokens')
-                ->where('user_id', $userId)
-                ->where('revoked', false)
-                ->count() >= 1;
+            ->where('user_id', $userId)
+            ->where('revoked', false)
+            ->count() >= 1;
     }
 
     private function generateToken($user, $message)
