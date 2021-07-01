@@ -23,4 +23,14 @@ class ControllerHelper extends Controller
             'data' => $data
         ]);
     }
+
+    public function getUserData()
+    {
+        $authUserId = auth()->user();
+        return response()->json([
+            'status' => true,
+            'message' => 'Success',
+            'message detail' => $authUserId
+        ]);
+    }
 }
