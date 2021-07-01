@@ -29,10 +29,14 @@ class AuthorController extends Controller
                 if ($this->checkActiveTokens($author->id)) {
                     return ControllerHelper::generateResponse(false, 'Login denied, their is an active access!', 400);
                 } else {
-                    $response = Http::asForm()->post('http://127.0.0.1:8001/oauth/token', [
+                    $response = Http::asForm()->post('https://gamersfactory-api.optimalsolution.tech/oauth/token', [
                         'grant_type' => 'password',
                         'client_id' => '4',
+<<<<<<< HEAD
                         'client_secret' => 'c7YBwrDHkONg7JaUlQqG6OiPpW4VASqdvNoJSwCD',
+=======
+                        'client_secret' => 'i1dqDMr5gsVoN1O3Dlqo4jnuVsnEZyUoaRC7RxTc',
+>>>>>>> 4962ca1 (cpanel edits)
                         'username' => $request->get('email'),
                         'password' => $request->get('password'),
                         'scope' => '*',

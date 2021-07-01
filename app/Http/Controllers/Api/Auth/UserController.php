@@ -78,6 +78,7 @@ class UserController extends Controller
             $user = User::where('email', $request->get('email'))->first();
             if (Hash::check($request->get('password'), $user->password)) {
                 $this->revokePreviousTokens($user->id);
+<<<<<<< HEAD
                 $response = Http::asForm()->post('http://127.0.0.1:8001/oauth/token', [
                     'grant_type' => 'password',
                     'client_id' => '2',
@@ -86,6 +87,24 @@ class UserController extends Controller
                     'password' => $request->get('password'),
                     'scope' => '*',
                 ]);
+=======
+                    $response = Http::asForm()->post('https://gamersfactory-api.optimalsolution.tech/oauth/token', [
+                        'grant_type' => 'password',
+                        'client_id' => '2',
+                        'client_secret' => 'PRGno8nogUZLjWaFr8DO2VgYTc0nNCi58AzQ2EMd',
+                        'username' => $request->get('email'),
+                        'password' => $request->get('password'),
+                        'scope' => '*',
+                    ]);
+
+                    $user->setAttribute('token', $response->json()['access_token']);
+                    $user->setAttribute('refresh_token', $response->json()['refresh_token']);
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'LOGGED_IN_SUCCESSFULLY',
+                        'object' => $user
+                    ], 200);
+>>>>>>> 4962ca1 (cpanel edits)
 
                 $user->setAttribute('token', $response->json()['access_token']);
                 $user->setAttribute('refresh_token', $response->json()['refresh_token']);
