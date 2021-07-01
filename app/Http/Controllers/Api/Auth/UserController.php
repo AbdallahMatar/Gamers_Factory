@@ -42,10 +42,10 @@ class UserController extends Controller
 
             $isSaved = $user->save();
             if ($isSaved) {
-                $response = Http::asForm()->post('http://127.0.0.1:8001/oauth/token', [
+                $response = Http::asForm()->post('https://gamesfactory1.herokuapp.com/oauth/token', [
                     'grant_type' => 'password',
                     'client_id' => '2',
-                    'client_secret' => 'r40DS4y6oXJ5yo1JPCMlmIbKnrDN5xo4oEGRTMCK',
+                    'client_secret' => 'ZOnp1JZ0RWoIMnrqY0A7jIshPxC3Nn6Ncg3vfNEZ',
                     'username' => $request->get('email'),
                     'password' => $request->get('password'),
                     'scope' => '*',
@@ -78,10 +78,10 @@ class UserController extends Controller
             $user = User::where('email', $request->get('email'))->first();
             if (Hash::check($request->get('password'), $user->password)) {
                 $this->revokePreviousTokens($user->id);
-                $response = Http::asForm()->post('http://127.0.0.1:8001/oauth/token', [
+                $response = Http::asForm()->post('https://gamesfactory1.herokuapp.com/oauth/token', [
                     'grant_type' => 'password',
                     'client_id' => '2',
-                    'client_secret' => 'r40DS4y6oXJ5yo1JPCMlmIbKnrDN5xo4oEGRTMCK',
+                    'client_secret' => 'ZOnp1JZ0RWoIMnrqY0A7jIshPxC3Nn6Ncg3vfNEZ',
                     'username' => $request->get('email'),
                     'password' => $request->get('password'),
                     'scope' => '*',

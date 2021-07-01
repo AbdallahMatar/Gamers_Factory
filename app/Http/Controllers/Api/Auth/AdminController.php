@@ -27,10 +27,10 @@ class AdminController extends Controller
                 if ($this->checkActiveTokens($admin->id)) {
                     return ControllerHelper::generateResponse(false, 'Login denied, their is an active access!', 400);
                 } else {
-                    $response = Http::asForm()->post('http://127.0.0.1:8001/oauth/token', [
+                    $response = Http::asForm()->post('https://gamesfactory1.herokuapp.com/oauth/token', [
                         'grant_type' => 'password',
                         'client_id' => '3',
-                        'client_secret' => 'AU4OTz3LgqS298EVN0T80qF2GNN0VL37hN53nK9r',
+                        'client_secret' => 'foUBdCnU1yzgid2wRNCPrc94Rq9JDiIkrre1wE9o',
                         'username' => $request->get('email'),
                         'password' => $request->get('password'),
                         'scope' => '*',
