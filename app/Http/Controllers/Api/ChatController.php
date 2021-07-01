@@ -6,49 +6,69 @@ use App\Events\listenMessage;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerHelper;
 use App\Message;
+use App\User_friend;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ChatController extends Controller
 {
     //
     public function sendMessage(Request $request)
     {
-        $request->validate([
-            'message' => 'required',
+        $roles = [
+            'message' => 'required|max:200',
             'to_user_id' => 'required|exists:users,id'
-        ]);
+        ];
+        $validator = Validator::make($request->all(), $roles);
+        if (!$validator->fails()) {
+            $userAuth = auth()->user()->id;
+            $query = User_friend::where('user_id', $userAuth)
+                ->where('friend_id', $request->to_user_id)
+                ->orWhere('friend_id', $request->to_user_id)
+                ->where('user_id', $userAuth)
+                ->where('accepted', 'friend')->first();
+            if ($query) {
+                $message = new Message();
+                $message->message = $request->message;
+                $message->to_user_id = $request->to_user_id;
+                $message->from_user_id = $userAuth;
 
-        $message = new Message();
-        $message->message = $request->message;
-        $message->to_user_id = $request->to_user_id;
-        $message->from_user_id = auth()->user()->id;
-
-        $isSaved = $message->save();
-        if ($isSaved) {
-            broadcast(new listenMessage($message));
-            return response()->json([
-                'status' => true,
-                'message' => 'Message send successfully',
-                'data' => $message
-            ]);
+                $isSaved = $message->save();
+                if ($isSaved) {
+                    broadcast(new listenMessage($message));
+                    return ControllerHelper::generateResponsedata(true, 'Message send successfully', $message);
+                } else {
+                    return ControllerHelper::generateResponse(false, 'Message Faile send', 400);
+                }
+            } else {
+                return ControllerHelper::generateResponse(false, 'This user is not friend', 400);
+            }
         } else {
-            return ControllerHelper::generateResponse(false, 'Message Faile send', 400);
+            return ControllerHelper::generateResponse(false, $validator->getMessageBag()->first(), 400);
         }
     }
 
     public function getMessagesAuthToUser($id)
     {
-        $user_id = auth()->user()->id;
-        $data = Message::where(['to_user_id' => $id, 'from_user_id' => $user_id])
-            ->orWhere('from_user_id', $id)->where('to_user_id', $user_id)->take(20)->get();
+        $userAuth = auth()->user()->id;
+        $query = User_friend::where('user_id', $userAuth)
+            ->where('friend_id', $id)
+            ->orWhere('friend_id', $id)
+            ->where('user_id', $userAuth)
+            ->where('accepted', 'friend')->first();
+        if ($query) {
+            $data = Message::where(['to_user_id' => $id, 'from_user_id' => $userAuth])
+                ->orWhere('from_user_id', $id)->where('to_user_id', $userAuth)->take(20)->get();
 
-        // return ControllerHelper::generateResponsedata(true, 'Success', $data);
-        return response()->json([
-            'status' => true,
-            'message' => 'Success',
-            'messageData' => $data
-        ]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Success',
+                'messageData' => $data
+            ]);
+        } else {
+            return ControllerHelper::generateResponse(false, 'This user is not friend', 400);
+        }
     }
 
     public function readMessage($id)
