@@ -84,10 +84,4 @@ Route::namespace('Api')->middleware('auth:user')->group(function () {
 });
 
 
-// Route::post('sender', function (Request $request) {
-
-//     $userAuth = Auth::user();
-//     broadcast(new Chat($request->get('message'), $userAuth))->toOthers();
-
-//     return ['success'];
-// })->middleware('auth:admin');
+Route::get('@me', 'ControllerHelper@getUserData')->middleware('auth:user');
