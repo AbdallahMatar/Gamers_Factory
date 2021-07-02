@@ -52,7 +52,7 @@ class AuthorController extends Controller
             if ($request->hasFile('image')) {
                 $authorImage = $request->file('image');
                 $imageName = time() . '_' . $request->get('email') . '.' . $authorImage->getClientOriginalExtension();
-                $authorImage->move('images/author/', $imageName);
+                $authorImage->move('storage/images/author/', $imageName);
                 $request_data['image'] = $imageName;
             }
 
@@ -109,12 +109,12 @@ class AuthorController extends Controller
                 $request_data = $request->except(['password', 'password_confirmation', 'image']);
 
                 if ($request->hasFile('image')) {
-                    if (File::exists('images/auther/' . $author->image)) {
-                        unlink('images/auther/' . $author->image);
+                    if (File::exists('storage/images/auther/' . $author->image)) {
+                        unlink('storage/images/auther/' . $author->image);
                     }
                     $autherImage = $request->file('image');
                     $imageName = time() . '_' . $author->name . '.' . $autherImage->getClientOriginalExtension();
-                    $autherImage->move('images/auther/', $imageName);
+                    $autherImage->move('storage/images/auther/', $imageName);
                     $request_data['image'] = $imageName;
                 }
 
@@ -144,8 +144,8 @@ class AuthorController extends Controller
         $author = Author::find($id);
         if ($author) {
             if ($author->image != 'default.png') {
-                if (File::exists('images/auther/' . $author->image)) {
-                    unlink('images/auther/' . $author->image);
+                if (File::exists('storage/images/auther/' . $author->image)) {
+                    unlink('storage/images/auther/' . $author->image);
                 }
             }
 

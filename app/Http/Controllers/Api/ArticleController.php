@@ -22,7 +22,7 @@ class ArticleController extends Controller
     public function index()
     {
         //
-        $articles = Article::with(['category', 'author'])->paginate(10);
+        $articles = Article::with(['category', 'author'])->take(4)->latest()->get();
         return ControllerHelper::generateResponsedata(true, 'Success', $articles);
     }
 
@@ -45,24 +45,17 @@ class ArticleController extends Controller
         ];
         $validator = Validator::make($request->all(), $roles);
         if (!$validator->fails()) {
-            $article = new Article();
-            $article->title = $request->title;
-            $article->description = $request->description;
-            $article->category_id = $request->category_id;
-            $article->author_id = $request->author_id;
-            $article->status = $request->status;
+            $request_data = $request->except(['password', 'password_confirmation', 'image']);
 
             if ($request->hasFile('image')) {
-                $articlePath = $request->file('image');
-                $articleName = time() . '_' . Str::random(5) . '.' . $articlePath->getClientOriginalExtension();
-
-                $path = $request->file('image')->storeAs('images/article/', $articleName, 'public');
-                $article->image = '/storage/' . $path;
-                // $article->image = $request->image->store('images', 'public');
+                $articleImage = $request->file('image');
+                $imageName = time() . '_' . Str::random(5) . '.' . $articleImage->getClientOriginalExtension();
+                $articleImage->move('storage/images/article/', $imageName);
+                $request_data['image'] = $imageName;
             }
 
-            $isSaved = $article->save();
-            if ($isSaved) {
+            $article = Article::create($request_data);
+            if ($article) {
                 return ControllerHelper::generateResponse(true, 'Saved Successfully', 201);
             } else {
                 return ControllerHelper::generateResponse(false, 'Error Credentials', 400);
@@ -114,12 +107,12 @@ class ArticleController extends Controller
                 $request_data = $request->except('image');
 
                 if ($request->hasFile('image')) {
-                    if (File::exists('images/article/' . $article->image)) {
-                        unlink('images/article/' . $article->image);
+                    if (File::exists('storage/images/article/' . $article->image)) {
+                        unlink('storage/images/article/' . $article->image);
                     }
                     $articleImage = $request->file('image');
                     $imageName = time() . '_' . Str::random(5) . '.' . $articleImage->getClientOriginalExtension();
-                    $articleImage->move('images/article/', $imageName);
+                    $articleImage->move('storage/images/article/', $imageName);
                     $request_data['image'] = $imageName;
                 }
 
@@ -148,14 +141,11 @@ class ArticleController extends Controller
         //
         $article = Article::find($id);
         if ($article) {
-            // if ($article->image != 'default.png') {
-            //     // dd($article->image);
-            //     if (File::exists('images/article/' . $article->image)) {
-            //         unlink('images/article/' . $article->image);
-            //     }
-            // }
-            // Storage::disk('public')->delete($article->image);
-            Storage::delete( public_path('/images/article' . $article->image));
+            if ($article->image != 'default.png') {
+                if (File::exists('storage/images/article/' . $article->image)) {
+                    unlink('storage/images/article/' . $article->image);
+                }
+            }
 
             $isDelted = $article->delete();
             if ($isDelted) {

@@ -57,7 +57,7 @@ class AdminController extends Controller
             if ($request->hasFile('image')) {
                 $adminImage = $request->file('image');
                 $imageName = time() . '_' . $request->get('email') . '.' . $adminImage->getClientOriginalExtension();
-                $adminImage->move('images/admin', $imageName);
+                $adminImage->move('storage/images/admin/', $imageName);
                 $admin->image = $imageName;
             }
 
@@ -114,12 +114,12 @@ class AdminController extends Controller
                 $request_data = $request->except(['password', 'password_confirmation', 'image']);
 
                 if ($request->hasFile('image')) {
-                    if (File::exists('images/admin/' . $admin->image)) {
-                        unlink('images/admin/' . $admin->image);
+                    if (File::exists('storage/images/admin/' . $admin->image)) {
+                        unlink('storage/images/admin/' . $admin->image);
                     }
                     $adminImage = $request->file('image');
                     $imageName = time() . '_' . $request->get('email') . '.' . $adminImage->getClientOriginalExtension();
-                    $adminImage->move('images/admin/', $imageName);
+                    $adminImage->move('storage/images/admin/', $imageName);
                     $request_data['image'] = $imageName;
                 }
 
@@ -149,8 +149,8 @@ class AdminController extends Controller
         $admin = Admin::find($id);
         if ($admin) {
             if ($admin->image != 'default.png') {
-                if (File::exists('images/admin/' . $admin->image)) {
-                    unlink('images/admin/' . $admin->image);
+                if (File::exists('storage/images/admin/' . $admin->image)) {
+                    unlink('storage/images/admin/' . $admin->image);
                 }
             }
 
