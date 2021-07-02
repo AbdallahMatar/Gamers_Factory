@@ -14,6 +14,17 @@ class Admin extends Authenticatable
 
     protected $fillable = ['name', 'email', 'password', 'gender', 'birth_date', 'status', 'image'];
 
+
+     /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password', 'remember_token',
+    ];
+
+
     /**
      * Find the user instance for the given username.
      *
