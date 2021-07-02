@@ -73,13 +73,16 @@ Route::namespace('Api')->middleware('auth:user')->group(function () {
     Route::get('messages', 'ChatController@getMessagesAuth');
 });
 
-// Room Message Fro User
-Route::namespace('Api')->middleware('auth:user')->group(function () {
+Route::namespace('Api')->middleware('auth:admin')->group(function () {
     Route::post('room/store', 'RoomController@addNewRoom');
-    Route::get('room/index', 'RoomController@getAllRooms');
     Route::get('room/myroom', 'RoomController@getMyRoom');
     Route::delete('room/delete/{id}', 'RoomController@deleteRoom');
+});
 
+Route::get('room/index', 'Api\RoomController@getAllRooms')->middleware('auth:admin,user');
+
+// Room Message Fro User
+Route::namespace('Api')->middleware('auth:user')->group(function () {
     Route::post('store/message', 'ConversationController@storeMessage');
 });
 
