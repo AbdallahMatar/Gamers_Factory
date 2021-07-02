@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Room extends Model
 {
     //
+    protected $fillable = ['name', 'description', 'image'];
+
     public function conversations()
     {
         return $this->hasMany(Conversation::class, 'room_id', 'id');
