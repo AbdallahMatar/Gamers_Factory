@@ -84,6 +84,7 @@ Route::get('room/index', 'Api\RoomController@getAllRooms')->middleware('auth:adm
 // Room Message Fro User
 Route::namespace('Api')->middleware('auth:user')->group(function () {
     Route::post('store/message', 'ConversationController@storeMessage');
+    Route::get('index/category', 'CategoryController@index');
 });
 
 

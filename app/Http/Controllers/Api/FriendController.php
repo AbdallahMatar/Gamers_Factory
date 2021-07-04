@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerHelper;
+use App\User;
 use App\User_friend;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,11 @@ class FriendController extends Controller
     //
     public function getAllFriend()
     {
-        $friends = Auth::user()->friends()->where('accepted', 'friend')->get();
+        $friends = User::with(['friends' => function ($query) {
+            $query->where('accepted', 'friend');
+            $query->where('user_id', Auth::user()->id);
+            $query->orWhere('friend_id', Auth::user()->id);
+        }])->get();
         if ($friends) {
             return ControllerHelper::generateResponsedata(true, 'Success', $friends);
         } else {
@@ -37,7 +42,7 @@ class FriendController extends Controller
     public function pendingFriend()
     {
         $userAuth = Auth::user()->id;
-        $pendingFriend = User_friend::where('friend_id', $userAuth)->where('accepted', 'pending')->get();
+        $pendingFriend = User_friend::with('users')->where('friend_id', $userAuth)->where('accepted', 'pending')->get();
         return ControllerHelper::generateResponsedata(true, 'Success', $pendingFriend);
     }
 

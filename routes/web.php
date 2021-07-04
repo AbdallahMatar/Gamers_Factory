@@ -21,9 +21,30 @@ Route::get('/', function () {
 });
 
 
-Route::post('sender', function (Request $request) {
-    $userAuth = Auth::user();
-    broadcast(new Chat($request->get('message'), $userAuth))->toOthers();
+// Route::post('sender', function (Request $request) {
+//     $userAuth = Auth::user();
+//     broadcast(new Chat($request->get('message'), $userAuth))->toOthers();
 
-    return ['success'];
+//     return ['success'];
+// });
+
+Route::prefix('cms/admin')->namespace('Cms\Auth')->group(function () {
+    Route::get('/login', 'AdminAuthController@showLoginView')->name('admin.login_view');
+    Route::post('/login', 'AdminAuthController@login')->name('admin.login');
+});
+//Admin Authenticated
+
+Route::prefix('cms/admin')->middleware('auth:admin_web')->group(function () {
+    Route::view('/', 'admin.dashboard')->name('admin.dashboard');
+    Route::get('/logout', 'Cms\Auth\AdminAuthController@logout')->name('admin.logout');
+});
+//Admin Authenticated
+
+Route::prefix('cms/admin')->namespace('Cms')->middleware('auth:admin_web')->group(function () {
+    Route::resource('admins', 'AdminController');
+    Route::resource('authors', 'AuthorController');
+    Route::resource('categories', 'CityController');
+    Route::resource('states', 'StateController');
+    Route::resource('employees', 'EmployeeController');
+    Route::resource('projects', 'ProjectController');
 });
