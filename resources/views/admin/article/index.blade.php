@@ -10,21 +10,29 @@
             <table class="table table-report -mt-2">
                 <thead>
                     <tr>
+                        <th class="whitespace-no-wrap">Image</th>
                         <th class="whitespace-no-wrap">ID</th>
-                        <th class="whitespace-no-wrap">NAME</th>
+                        <th class="whitespace-no-wrap">TITLE</th>
                         <th class="text-center whitespace-no-wrap">STATUS</th>
-                        <th class="whitespace-no-wrap">STATES COUNT</th>
+                        {{-- <th class="whitespace-no-wrap">admin</th> --}}
                         <th class="whitespace-no-wrap">CREATED AT</th>
                         <th class="whitespace-no-wrap">UPDATED AT</th>
                         <th class="text-center whitespace-no-wrap">ACTION</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($cities as $index => $city)
+                    @foreach ($articles as $index => $article)
                         <tr class="intro-x">
+                            <td>
+                                <div class="w-10 h-10 image-fit zoom-in">
+                                    <img alt="Admin" class="tooltip rounded-full"
+                                        src="{{ url('storage/images/article/' . $article->image) }}"
+                                        title="Uploaded at 17 July 2021">
+                                </div>
+                            </td>
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ $city->name }}</td>
-                            @if ($city->status == 'Active')
+                            <td>{{ $article->title }}</td>
+                            @if ($article->status == 'Active')
                                 <td class="w-40">
                                     <div class="flex items-center justify-center text-theme-9"> <svg
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -45,16 +53,14 @@
                                         </svg> Inactive </div>
                                 </td>
                             @endif
-                            <td><a href="{{ route('cities.states', $city->id) }}" type="button"
-                                    class="button button--sm w-24 mr-1 mb-2 bg-theme-1 text-white">{{ $city->states_count }}
-                                    - State/s</a></td>
-                            <td>{{ $city->created_at->diffForHumans() }}</td>
-                            <td>{{ $city->updated_at->diffForHumans() }}</td>
+                            {{-- <td>{{ $authors->state->name }}</td> --}}
+                            <td>{{ $article->created_at->diffForHumans() }}</td>
+                            <td>{{ $article->updated_at->diffForHumans() }}</td>
                             <td class="table-report__action w-56">
                                 <div class="flex justify-center items-center">
-                                    <a class="flex items-center mr-3" href="{{ route('cities.edit', $city->id) }}">
+                                    <a class="flex items-center mr-3" href="{{ route('articles.edit', $article->id) }}">
                                         <i data-feather="check-square" class="w-4 h-4 mr-1"></i> Edit </a>
-                                    <a onclick="confirmDelete(this, '{{ $city->id }}')" href="#"
+                                    <a onclick="confirmDelete(this, '{{ $article->id }}')" href="#"
                                         class="flex items-center text-theme-6" data-toggle="modal"
                                         data-target="#delete-confirmation-modal"> <i data-feather="trash-2"
                                             class="w-4 h-4 mr-1"></i> Delete </a>
@@ -94,7 +100,7 @@
         }
 
         function deleteService(app, id) {
-            axios.delete('/cms/admin/cities/' + id)
+            axios.delete('/cms/admin/articles/' + id)
                 .then(function(response) {
                     // handle success
                     app.closest('tr').remove();

@@ -20,7 +20,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <meta name="keywords"
         content="admin template, Midone admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="LEFT4CODE">
-    <title>Company @yield('title')</title>
+    <title>Gamers Factory @yield('title')</title>
     <!-- BEGIN: CSS Assets-->
     @yield('style')
     <link rel="stylesheet" href="{{ asset('cms/dist/css/app.css') }}" />
@@ -513,7 +513,7 @@ License: You must have a valid license purchased only from themeforest(the above
             <a href="{{ route('admin.dashboard') }}" class="intro-x flex items-center pl-5 pt-4">
                 <img alt="Midone Tailwind HTML Admin Template" class="w-6"
                     src="{{ asset('cms/dist/images/logo.svg') }}">
-                    <span class="hidden xl:block text-white text-lg ml-3"> Mid<span class="font-medium">one</span> </span>
+                    <span class="hidden xl:block text-white text-lg ml-3"> Gamers<span class="font-medium"> Factory</span> </span>
             </a>
             <div class="side-nav__devider my-6"></div>
             <ul>
@@ -574,13 +574,34 @@ License: You must have a valid license purchased only from themeforest(the above
                     </a>
                     <ul class="">
                         <li>
-                            <a href="{{ route('authors.index') }}" class="side-menu">
+                            <a href="{{ route('categories.index') }}" class="side-menu">
                                 <div class="side-menu__icon"> <i data-feather="activity"></i> </div>
                                 <div class="side-menu__title"> Index </div>
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('authors.create') }}" class="side-menu">
+                            <a href="{{ route('categories.create') }}" class="side-menu">
+                                <div class="side-menu__icon"> <i data-feather="activity"></i> </div>
+                                <div class="side-menu__title"> Create </div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" class="side-menu">
+                        <div class="side-menu__icon"> <i data-feather="edit"></i> </div>
+                        <div class="side-menu__title"> articles <i data-feather="chevron-down"
+                                class="side-menu__sub-icon"></i> </div>
+                    </a>
+                    <ul class="">
+                        <li>
+                            <a href="{{ route('articles.index') }}" class="side-menu">
+                                <div class="side-menu__icon"> <i data-feather="activity"></i> </div>
+                                <div class="side-menu__title"> Index </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('articles.create') }}" class="side-menu">
                                 <div class="side-menu__icon"> <i data-feather="activity"></i> </div>
                                 <div class="side-menu__title"> Create </div>
                             </a>

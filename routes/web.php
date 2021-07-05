@@ -43,8 +43,9 @@ Route::prefix('cms/admin')->middleware('auth:admin_web')->group(function () {
 Route::prefix('cms/admin')->namespace('Cms')->middleware('auth:admin_web')->group(function () {
     Route::resource('admins', 'AdminController');
     Route::resource('authors', 'AuthorController');
-    Route::resource('categories', 'CityController');
-    Route::resource('states', 'StateController');
-    Route::resource('employees', 'EmployeeController');
-    Route::resource('projects', 'ProjectController');
+    Route::resource('categories', 'CategoryController');
+    Route::resource('articles', 'ArticleController');
+    // Route::resource('states', 'StateController');
+    // Route::resource('employees', 'EmployeeController');
+    // Route::resource('projects', 'ProjectController');
 });

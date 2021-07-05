@@ -40,8 +40,8 @@ Route::namespace('Api\Auth')->middleware('auth:user')->group(function () {
 // Admin Auth
 Route::namespace('Api')->middleware('auth:admin')->group(function () {
     Route::get('admin/logout', 'Auth\AdminController@logout');
-    Route::apiResource('admins', 'AdminController');
-    Route::apiResource('authers', 'AuthorController');
+    // Route::apiResource('admins', 'AdminController');
+    // Route::apiResource('authers', 'AuthorController');
 });
 
 // Author Auth
@@ -50,10 +50,10 @@ Route::namespace('Api')->middleware('auth:author')->group(function () {
 });
 
 // Admin And Author Auth
-Route::namespace('Api')->middleware('auth:admin,author')->group(function () {
-    Route::apiResource('categories', 'CategoryController');
-    Route::apiResource('articles', 'ArticleController');
-});
+// Route::namespace('Api')->middleware('auth:admin,author')->group(function () {
+//     Route::apiResource('categories', 'CategoryController');
+//     Route::apiResource('articles', 'ArticleController');
+// });
 
 // Friend System
 Route::namespace('Api')->middleware('auth:user')->group(function () {
@@ -89,3 +89,5 @@ Route::namespace('Api')->middleware('auth:user')->group(function () {
 
 
 Route::get('@me', 'ControllerHelper@getUserData')->middleware('auth:user');
+
+Route::get('index/article', 'Api\ArticleController@index')->middleware('auth:user');

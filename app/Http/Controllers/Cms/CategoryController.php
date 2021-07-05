@@ -16,8 +16,8 @@ class CategoryController extends Controller
     public function index()
     {
         //
-        $cities = Category::withcount('states')->paginate(10);
-        return view('admin.cities.index', ['cities' => $cities]);
+        $categories = Category::paginate(10);
+        return view('admin.category.index', ['categories' => $categories]);
     }
 
     /**
@@ -28,7 +28,7 @@ class CategoryController extends Controller
     public function create()
     {
         //
-        return view('admin.cities.create');
+        return view('admin.category.create');
     }
 
     /**
@@ -41,23 +41,23 @@ class CategoryController extends Controller
     {
         //
         $request->validate([
-            'name' => 'required|string|min:3|max:15|unique:cities',
+            'name' => 'required|string|min:2|max:15|unique:categories',
             'status' => 'in:on'
         ], [
-            'name.required' => 'Please enter city name',
+            'name.required' => 'Please enter category name',
             'name.min' => 'Name must be at least 3 characters'
 
         ]);
 
-        $city = new Category();
-        $city->name = $request->get('name');
-        $city->status = $request->has('status') ? 'Active' : 'InActive';
-        $isSaved = $city->save();
+        $Category = new Category();
+        $Category->name = $request->get('name');
+        $Category->status = $request->has('status') ? 'Active' : 'InActive';
+        $isSaved = $Category->save();
         if ($isSaved) {
-            toast('City Add Successfully', 'success');
-            return redirect(route('cities.index'));
+            toast('Category Add Successfully', 'success');
+            return redirect(route('categories.index'));
         } else {
-            toast('Faild to create City', 'error');
+            toast('Faild to create Category', 'error');
             return redirect()->back();
         }
     }
@@ -82,8 +82,8 @@ class CategoryController extends Controller
     public function edit($id)
     {
         //
-        $city = City::findOrFail($id);
-        return view('admin.cities.edit', ['city' => $city]);
+        $category = Category::findOrFail($id);
+        return view('admin.category.edit', ['category' => $category]);
     }
 
     /**
@@ -98,21 +98,21 @@ class CategoryController extends Controller
         //
         $request->request->add(['id' => $id]);
         $request->validate([
-            'id' => 'required|integer|exists:cities',
-            'name' => 'required|string|min:3|max:15|unique:cities,name,' . $id,
+            'id' => 'required|integer|exists:categories',
+            'name' => 'required|string|min:3|max:15|unique:categories,name,' . $id,
             'status' => 'in:on'
         ]);
 
-        $city = City::find($id);
-        $city->name = $request->get('name');
-        $city->status = $request->has('status') ? 'Active' : 'InActive';
+        $Category = Category::find($id);
+        $Category->name = $request->get('name');
+        $Category->status = $request->has('status') ? 'Active' : 'InActive';
 
-        $isSaved = $city->save();
+        $isSaved = $Category->save();
         if ($isSaved) {
-            toast('City Updated Successfully', 'success');
-            return redirect(route('cities.index'));
+            toast('Category Updated Successfully', 'success');
+            return redirect(route('categories.index'));
         } else {
-            toast('Faild to Updated City', 'error');
+            toast('Faild to Updated Category', 'error');
             return redirect()->back();
         }
     }
@@ -126,17 +126,17 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         //
-        $isDeleted = City::destroy($id);
+        $isDeleted = Category::destroy($id);
         if ($isDeleted) {
             return response()->json([
                 'title' => 'Success',
-                'text' => 'City Deleted Successfully',
+                'text' => 'Category Deleted Successfully',
                 'icon' => 'success'
             ], 200);
         } else {
             return response()->json([
                 'title' => 'Failed',
-                'text' => 'Faild to delete city',
+                'text' => 'Faild to delete Category',
                 'icon' => 'error'
             ], 400);
         }
@@ -144,7 +144,7 @@ class CategoryController extends Controller
 
     public function showStates($id)
     {
-        $states = City::find($id)->states()->paginate(5);
+        $states = Category::find($id)->states()->paginate(5);
         return view('admin.states.index', ['states' => $states]);
     }
 }

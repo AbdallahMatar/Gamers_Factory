@@ -21,17 +21,19 @@
                 </div>
             @endforeach
         @endif
-        <form action="{{ route('cities.store') }}" method="POST" id="create_service_form" enctype="multipart/form-data">
+        <form action="{{ route('categories.update',$category->id) }}" method="POST" id="create_service_form" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
             <div>
                 <label>Name</label>
-                <input type="text" name="name" value="{{ old('name') }}" class="input w-full border mt-2"
+                <input type="text" name="name" value="{{ $category->name }}" class="input w-full border mt-2"
                     placeholder="Name">
             </div>
             <div class="text-right mt-3">
                 <div class="w-full sm:w-auto flex items-center sm:ml-auto mt-3 sm:mt-0">
                     <div class="mr-3">Status</div>
-                    <input name="status" data-target="#basic-textual-toast" class="show-code input input--switch border" type="checkbox" checked>
+                    <input name="status" data-target="#basic-textual-toast" class="show-code input input--switch border"
+                        type="checkbox" @if ($category->status === 'Active') checked @endif>
                 </div>
             </div>
             <div class="text-right mt-3">
